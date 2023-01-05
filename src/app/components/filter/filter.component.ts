@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, tap } from 'rxjs';
@@ -16,26 +16,27 @@ export class FilterComponent implements OnInit {
   dynamicForm: FormGroup;
   params:any={};
   unsubscribe$: Subject<boolean> = new Subject();
+  @Output() filters = new EventEmitter<{}>();
+  
   constructor(private _Service:SharedDataService,private fb: FormBuilder,private _route: ActivatedRoute,
     private _router: Router) {
     this.dynamicForm = this.fb.group({
       filters: this.fb.array([])
     });
-    this.getParams();
-
   }
  
   ngOnInit() {
     this.seedFiltersFormArray();
+    this.getParams();
   }
   
   getParams(){
-    this._route.queryParams.pipe(takeUntil(this.unsubscribe$),tap(p=>console.log(p))).subscribe(params=> this.params = params)
+    this._route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(params=> this.params = params);
   }
 
  
 
-   seedFiltersFormArray() {
+  seedFiltersFormArray() {
     this.seedData.forEach((seedDatum:any) => {
       const key = seedDatum.title;
       // const value = params ? params[key] : '';
@@ -46,8 +47,6 @@ export class FilterComponent implements OnInit {
       }
       this.filtersFormArray.push(formGroup);
     });
-    console.log(" this.filtersFormArray", this.filtersFormArray);
-    
   }
 
   addFormControls(name:string,type:string){
@@ -59,8 +58,10 @@ export class FilterComponent implements OnInit {
   }
 
   getControlValue(name:string){
-    console.log("this.params",this.params);
-    return this.params[name];
+    // console.log("this.params",this._route.snapshot.queryParams );
+    // console.log("this.params",this._route.snapshot.queryParams[name] );
+  
+    return this._route.snapshot.queryParams[name];
   }
 
   getOptions(url:string){
@@ -82,6 +83,9 @@ export class FilterComponent implements OnInit {
       queryParamsHandling: 'merge',
       skipLocationChange: false
     });
+  
+    this.filters.emit(params);
+   
   }
 
   get filtersFormArray() {

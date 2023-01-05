@@ -1,10 +1,10 @@
 <div class="container-fluid my-2 p-4">
     <div class="row">
         <div class="col-md-2" *ngIf="toggleFilterComp | async">
-            <app-filter></app-filter>
+            <app-filter (filters)="setFilters($event)"></app-filter>
         </div>
         <div class="col-md-10" [class.col-md-12]="!(toggleFilterComp | async)">
-            <app-employees-list></app-employees-list>
+            <app-employees-list [filters]="filters"></app-employees-list>
         </div>
     </div>
 </div>

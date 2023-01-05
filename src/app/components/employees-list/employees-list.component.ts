@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -22,10 +22,35 @@ export class EmployeesListComponent implements OnInit,AfterViewInit {
 
   unsubscribe$: Subject<boolean> = new Subject();
 
+  @Input() filters:any;
+  
+  data!: employee[];
+
   constructor(private _employeeServ:SharedDataService) {
     this.dataSource = new MatTableDataSource();
   }
 
+  ngOnChanges(){
+    console.log("ngOnChanges....");
+    console.log(this.filters);
+    if(Object.keys(this.filters).length > 0){      
+      const email = String(this.filters.Email);
+      const phone = String(this.filters.Phone);
+      const name = String(this.filters.Name);
+      const country = String(this.filters.country);
+      const company = String(this.filters.company);
+      const date = String(this.filters.date);
+      const arr = this.data.filter((res:any)=>{
+        if(res.email.includes(email) || res.phone.includes(phone) || res.name.includes(name)
+        || res.country.includes(country) || res.company.includes(company) || res.date.includes(date)){
+          return res;
+        }
+      })
+      this.dataSource = new MatTableDataSource(arr)
+      console.log(arr);
+      
+    }
+  }
   ngOnInit(): void {
     this.getEmployees();
   }
@@ -34,6 +59,7 @@ export class EmployeesListComponent implements OnInit,AfterViewInit {
    this._employeeServ.getEmployees()
    .pipe(takeUntil(this.unsubscribe$))
    .subscribe(res=>{
+    this.data = res;
     this.dataSource = new MatTableDataSource(res);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;

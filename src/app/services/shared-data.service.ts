@@ -10,6 +10,7 @@ import { employess } from '../mock_data';
 export class SharedDataService {
 
   toggleFilterComp:BehaviorSubject<boolean> = new BehaviorSubject(true);
+  filters:BehaviorSubject<any> = new BehaviorSubject({});
 
   constructor(private http:HttpClient) { }
 
