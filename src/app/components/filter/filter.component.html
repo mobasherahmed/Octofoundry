@@ -1,0 +1,59 @@
+
+<mat-card>
+    <mat-card-content>
+        <h1 class="text-center text-uppercase font-weight-bold">Filters</h1>
+        <hr>
+        <form [formGroup]="dynamicForm">
+            <div formArrayName="filters">
+              <div *ngFor="let filter of filtersFormArray.controls; let i = index">
+                <div [formGroupName]="i" class="container">
+                    <mat-form-field>
+                        <input
+                          matInput
+                          formControlName="Email"
+                          type="text"
+                          [placeholder]="'s'"
+                        />
+                      </mat-form-field>
+                </div>
+              </div>
+            </div>
+        </form>
+         
+          <!-- <div>
+            <form  [formGroup]="dynamicForm">
+          
+              <div *ngFor="let filter of seedData" class="form-row">
+               
+                <div [formGroup]="form">
+                    
+                    <label [attr.for]="filter.title">{{filter.title}}</label>
+                  
+                    <div [ngSwitch]="filter.type">
+                  
+                      <input mat-input *ngSwitchCase="'text'" [formControlName]="filter.title"
+                              [id]="filter.title" [type]="filter.type">
+                  
+                      <select [id]="filter.title" *ngSwitchCase="'dropdown'" [formControlName]="filter.title">
+                        <option *ngFor="let opt of getOptions()" [value]="opt.id">{{opt.name}}</option>
+                      </select>
+                  
+                    </div>
+                  
+                    <div class="errorMessage" *ngIf="!isValid">{{filter.label}} is required</div>
+                  </div>
+
+              </div>
+          
+              <div class="form-row">
+                <button type="submit" [disabled]="!form.valid">Save</button>
+              </div>
+            </form>
+          
+            <div *ngIf="payLoad" class="form-row">
+              <strong>Saved the following values</strong><br>{{payLoad}}
+            </div>
+          </div> -->
+          
+    </mat-card-content>
+</mat-card>
