@@ -1,9 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil, tap } from 'rxjs';
-import { configI } from 'src/app/interfaces';
-import { SharedDataService } from 'src/app/services/shared-data.service';
+import { Subject, takeUntil} from 'rxjs';
+import { configI } from 'src/app/shared/interfaces/interfaces';
+import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 import { config } from './config';
 
 @Component({
@@ -107,7 +107,7 @@ export class FilterComponent implements OnInit {
   addQueryParams(params:any){
     // changes the route without moving from the current view or
      // triggering a navigation event,
-     this._router.navigate([''], {
+     this._router.navigate(['/employees'], {
       relativeTo: this._route,
       queryParams: params,
       // preserve the existing query params in the route

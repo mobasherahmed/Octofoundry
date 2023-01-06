@@ -3,8 +3,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil } from 'rxjs';
-import { employeeI, filtersI } from 'src/app/interfaces';
-import { SharedDataService } from 'src/app/services/shared-data.service';
+import { employeeI, filtersI } from 'src/app/shared/interfaces/interfaces';
+import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 
 @Component({
   selector: 'app-employees-list',
@@ -35,7 +35,9 @@ export class EmployeesListComponent implements OnInit,AfterViewInit {
   
 
   filterEmployees(){
-    if(Object.keys(this.filters).length > 0){      
+    console.log(this.filters);
+    
+    if(this.filters && Object.keys(this.filters).length > 0){      
       const arr = this.data.filter((res:any)=>{
         if(res.email.includes(this.filters.Email)  || res.phone.includes(this.filters.Phone) || 
            res.name.includes(this.filters.Name) || res.country.includes(this.filters.country) || 

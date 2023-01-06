@@ -1,10 +1,1 @@
-<div class="container-fluid my-2 p-4">
-    <div class="row">
-        <div class="col-md-2 animate__animated animate__fadeInLeft" *ngIf="toggleFilterComp | async">
-            <app-filter (filters)="setFilters($event)"></app-filter>
-        </div>
-        <div class="col-md-10" [class.col-md-12]="!(toggleFilterComp | async)">
-            <app-employees-list [filters]="filters"></app-employees-list>
-        </div>
-    </div>
-</div>
+<router-outlet></router-outlet>
