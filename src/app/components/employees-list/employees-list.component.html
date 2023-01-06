@@ -4,10 +4,10 @@
     <mat-card-content>
       <mat-form-field>
         <mat-label><mat-icon>search</mat-icon></mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mobasher" #input>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mobasher" #input title="search bar">
       </mat-form-field>
    
-      <button type="button" mat-icon-button class="visible-md" (click)="toggleFilter()">
+      <button  type="button" mat-icon-button title="Toggle filter component" (click)="toggleFilter()">
         <mat-icon aria-label="Side nav toggle icon">filter_list</mat-icon>
     </button>
 
@@ -48,7 +48,7 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+            <td class="mat-cell" colspan="6">No data matching the filter "{{input.value}}" {{this.filters | json}}</td>
           </tr>
         </table>
       

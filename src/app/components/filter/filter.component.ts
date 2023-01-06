@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { SharedDataService } from 'src/app/services/shared-data.service';
@@ -14,11 +14,12 @@ export class FilterComponent implements OnInit {
 
   seedData = config;
   dynamicForm: FormGroup;
-  params:any={};
   unsubscribe$: Subject<boolean> = new Subject();
   @Output() filters = new EventEmitter<{}>();
   
-  constructor(private _Service:SharedDataService,private fb: FormBuilder,private _route: ActivatedRoute,
+  constructor(private _Service:SharedDataService,
+    private fb: FormBuilder,
+    private _route: ActivatedRoute,
     private _router: Router) {
     this.dynamicForm = this.fb.group({
       filters: this.fb.array([])
@@ -31,15 +32,47 @@ export class FilterComponent implements OnInit {
   }
   
   getParams(){
-    this._route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(params=> this.params = params);
+    this._route.queryParams.pipe(takeUntil(this.unsubscribe$))
+    .subscribe(params=>
+    this.filtersFormArray.controls.forEach(form=>this.doSwitch(form,params)));
+  } 
+
+  doSwitch(form:any,params:any){
+    const control = form.get('ControlName')?.value;
+    switch(control){
+      case 'Email':{
+        form.get('Value')?.setValue(params.Email);
+        break;
+      }
+      case 'Phone':{
+        form.get('Value')?.setValue(params.Phone);
+        break;
+      }
+      case 'Name':{
+        form.get('Value')?.setValue(params.Name);
+        break;
+      }
+      case 'Company':{
+        form.get('Value')?.setValue(params.Company);
+        break;
+      }
+      case 'country':{
+        form.get('Value')?.setValue(params.country);
+        break;
+      }
+      case 'Date':{
+        form.get('Value')?.setValue(params.Date);
+        break;
+      }
+      default:{
+        break;
+      }
+    }
   }
 
- 
-
+  
   seedFiltersFormArray() {
     this.seedData.forEach((seedDatum:any) => {
-      const key = seedDatum.title;
-      // const value = params ? params[key] : '';
       const formGroup = this.addFormControls(seedDatum.title,seedDatum.type);
       if(seedDatum.type === 'dropdown'){
        const options = this.getOptions(seedDatum.url);
@@ -53,15 +86,8 @@ export class FilterComponent implements OnInit {
     const formGroup = this.fb.group({});
     formGroup.addControl('ControlName',this.fb.control(name))
     formGroup.addControl('Type',this.fb.control(type))
-    formGroup.addControl('Value',this.fb.control(this.getControlValue(name)))
+    formGroup.addControl('Value',this.fb.control(''))
     return formGroup;
-  }
-
-  getControlValue(name:string){
-    // console.log("this.params",this._route.snapshot.queryParams );
-    // console.log("this.params",this._route.snapshot.queryParams[name] );
-  
-    return this._route.snapshot.queryParams[name];
   }
 
   getOptions(url:string){
@@ -72,8 +98,8 @@ export class FilterComponent implements OnInit {
 
   submit() {
     let params:any = {};
-    this.dynamicForm.value.filters.forEach((filter:any) => params[filter.ControlName] = filter.Value); 
-     
+    this.dynamicForm.value.filters.forEach((filter:any) => params[filter.ControlName] = String(filter.Value).trim()); 
+
     // changes the route without moving from the current view or
      // triggering a navigation event,
      this._router.navigate([''], {
@@ -83,7 +109,7 @@ export class FilterComponent implements OnInit {
       queryParamsHandling: 'merge',
       skipLocationChange: false
     });
-  
+    // example of using output decorator to share data between components..
     this.filters.emit(params);
    
   }

@@ -1,3 +1,12 @@
+export interface filters{
+    Email:string,
+    Name:string,
+    Phone:string,
+    Date:string,
+    country:string,
+    Company:string,
+}
+
 export interface employee{
     id: number,
     name: string,

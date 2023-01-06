@@ -3,6 +3,9 @@
     padding-right: 0;
     .select{
         margin-left: -4px;
-        width: 185px;
+        width: 100%;
+    }
+    mat-form-field{
+        width: 100%;
     }
 }

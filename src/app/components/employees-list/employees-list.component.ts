@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil } from 'rxjs';
-import { employee } from 'src/app/employee.interface';
+import { employee, filters } from 'src/app/interfaces';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 
 @Component({
@@ -14,45 +14,37 @@ import { SharedDataService } from 'src/app/services/shared-data.service';
 export class EmployeesListComponent implements OnInit,AfterViewInit {
 
   displayedColumns: string[] = ['name','phone','email','date','company','country'];
-  dataSource: MatTableDataSource<employee>;
-  // @ts-ignore
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  // @ts-ignore
-  @ViewChild(MatSort) sort: MatSort;
-
-  unsubscribe$: Subject<boolean> = new Subject();
-
-  @Input() filters:any;
-  
   data!: employee[];
+  dataSource: MatTableDataSource<employee>;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  @Input() filters!:filters;
+  unsubscribe$: Subject<boolean> = new Subject();
 
   constructor(private _employeeServ:SharedDataService) {
     this.dataSource = new MatTableDataSource();
   }
 
-  ngOnChanges(){
-    console.log("ngOnChanges....");
-    console.log(this.filters);
+  ngOnChanges(): void{
+    this.filterEmployees()
+  }
+
+  ngOnInit(): void {
+    this.getEmployees();
+  }
+  
+
+  filterEmployees(){
     if(Object.keys(this.filters).length > 0){      
-      const email = String(this.filters.Email);
-      const phone = String(this.filters.Phone);
-      const name = String(this.filters.Name);
-      const country = String(this.filters.country);
-      const company = String(this.filters.company);
-      const date = String(this.filters.date);
       const arr = this.data.filter((res:any)=>{
-        if(res.email.includes(email) || res.phone.includes(phone) || res.name.includes(name)
-        || res.country.includes(country) || res.company.includes(company) || res.date.includes(date)){
+        if(res.email.includes(this.filters.Email)  || res.phone.includes(this.filters.Phone) || 
+           res.name.includes(this.filters.Name) || res.country.includes(this.filters.country) || 
+           res.company.includes(this.filters.Company) || res.date.includes(this.filters.Date)){
           return res;
         }
       })
-      this.dataSource = new MatTableDataSource(arr)
-      console.log(arr);
-      
+      this.dataSource =  new MatTableDataSource(arr) ;
     }
-  }
-  ngOnInit(): void {
-    this.getEmployees();
   }
 
   getEmployees(){

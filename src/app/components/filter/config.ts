@@ -24,5 +24,5 @@ export const config = [
   {
     title: 'Date',
     type: 'date',
-  },
+  }
 ];
