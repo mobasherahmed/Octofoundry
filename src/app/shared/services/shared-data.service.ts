@@ -18,13 +18,6 @@ export class SharedDataService {
   }
 
   getCountries(url:string):Observable<any>{
-    
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      }),
-    };
     return this.http.get<any>(url);
   }
 }

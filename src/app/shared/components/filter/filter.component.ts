@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil} from 'rxjs';
+import { map, Subject, takeUntil} from 'rxjs';
 import { configI } from 'src/app/shared/interfaces/interfaces';
 import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 import { config } from './config';
@@ -17,6 +17,7 @@ export class FilterComponent implements OnInit {
   dynamicForm: FormGroup;
   unsubscribe$: Subject<boolean> = new Subject();
   @Output() filters = new EventEmitter<{}>();
+  countries: any [] = [];
   
   constructor(private _Service:SharedDataService,
     private fb: FormBuilder,
@@ -75,8 +76,7 @@ export class FilterComponent implements OnInit {
     this.seedData.forEach((seedDatum:any) => {
       const formGroup = this.addFormControls(seedDatum.title,seedDatum.type);
       if(seedDatum.type === 'dropdown'){
-       const options = this.getOptions(seedDatum.url);
-       formGroup.addControl('Options',this.fb.control(options))
+       this.getOptions(seedDatum.api,formGroup);
       }
       this.filtersFormArray.push(formGroup);
     });
@@ -90,10 +90,34 @@ export class FilterComponent implements OnInit {
     return formGroup;
   }
 
-  getOptions(url:string){
-    // this._Service.getCountries(url).subscribe(res=>console.log)
-    return [{name:'Egypt',Alpha3Code:'EGP'}]
+  getOptions(url:string,formGroup:any){
+    this._Service.getCountries(url).pipe(takeUntil(this.unsubscribe$))
+    .subscribe((res:any)=>{
+      const countries = [];
+      for(let key in res){
+        let country = {name : res[key].name , code : res[key].alpha3Code};
+        countries.push(country);
+      }
+      const sortedCountries = this.sortCountries(countries);
+      formGroup.addControl('Options',this.fb.control(sortedCountries))
+    })
   }
+
+  sortCountries(countries:any){
+   return countries.sort((a:any, b:any)=>{
+      const nameA = a.name.toUpperCase();
+      const nameB = b.name.toUpperCase(); 
+      if (nameA > nameB) {
+        return 1;
+      }
+      if (nameA < nameB) {
+        return -1;
+      }
+      // names must be equal
+      return 0;
+    });
+  }
+
   
   submit() {
     let params:any = {};

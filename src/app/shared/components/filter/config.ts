@@ -18,7 +18,7 @@ export const config = [
   {
     title: 'country',
     type: 'dropdown',
-    api: 'http://countryapi.gear.host/v1/Country/getCountries?pLimit=25&pPage=1',
+    api: 'https://countryapi.io/api/all?apikey=tHV3TWngcn7KFEla6hMMZxGUBYEwqMMuYd9sjmBR',
     multiple: false,
   },
   {
