@@ -35,17 +35,21 @@ export class EmployeesListComponent implements OnInit,AfterViewInit {
   
 
   filterEmployees(){
-    console.log(this.filters);
-    
-    if(this.filters && Object.keys(this.filters).length > 0){      
-      const arr = this.data.filter((res:any)=>{
-        if(res.email.includes(this.filters.Email)  || res.phone.includes(this.filters.Phone) || 
-           res.name.includes(this.filters.Name) || res.country.includes(this.filters.country) || 
-           res.company.includes(this.filters.Company) || res.date.includes(this.filters.Date)){
-          return res;
+    if(this.filters && Object.keys(this.filters).length > 0){
+      const arr : employeeI[] = []
+     
+      for(let key in this.filters){
+        // to avoid typescript err of No index signature with a parameter of type 'string' was found on type..
+        // @ts-ignore
+        if(this.filters[key].length > 0){
+          const searchKey = String(key).toLocaleLowerCase();
+          // @ts-ignore
+          const filterations = this.data.filter((res:any)=>res[searchKey].includes(this.filters[key]))
+          arr.push(...filterations); 
         }
-      })
-      this.dataSource =  new MatTableDataSource(arr) ;
+        
+      }      
+      this.createMatTableData(arr);
     }
   }
 
@@ -54,10 +58,14 @@ export class EmployeesListComponent implements OnInit,AfterViewInit {
    .pipe(takeUntil(this.unsubscribe$))
    .subscribe(res=>{
     this.data = res;
-    this.dataSource = new MatTableDataSource(res);
+    this.createMatTableData(res);
+   });
+  }
+
+  createMatTableData(arr:any){
+    this.dataSource = new MatTableDataSource(arr);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-   });
   }
   
   ngAfterViewInit() {

@@ -97,7 +97,8 @@ export class FilterComponent implements OnInit {
   
   submit() {
     let params:any = {};
-    this.dynamicForm.value.filters.forEach((filter:any) => params[filter.ControlName] = String(filter.Value).trim()); 
+    this.dynamicForm.value.filters.forEach((filter:any) => 
+    params[filter.ControlName] = filter.Value != undefined ? String(filter.Value).trim() : ''); 
     this.addQueryParams(params);
     //example of using output decorator to share data between components..
     this.filters.emit(params);
