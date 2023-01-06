@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { observable, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { filtersI } from './interfaces';
 import { SharedDataService } from './services/shared-data.service';
 @Component({
   selector: 'app-root',
@@ -9,7 +10,7 @@ import { SharedDataService } from './services/shared-data.service';
 export class AppComponent {
   title = 'Octofoundry';
   toggleFilterComp:Observable<boolean> = new Observable();
-  filters: any = {};
+  filters!:filtersI;
   constructor(private _toggleState:SharedDataService){
     this.toggleFilterComp = _toggleState.toggleFilterComp.asObservable();
   }

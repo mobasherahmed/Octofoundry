@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil } from 'rxjs';
-import { employee, filters } from 'src/app/interfaces';
+import { employeeI, filtersI } from 'src/app/interfaces';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 
 @Component({
@@ -14,11 +14,11 @@ import { SharedDataService } from 'src/app/services/shared-data.service';
 export class EmployeesListComponent implements OnInit,AfterViewInit {
 
   displayedColumns: string[] = ['name','phone','email','date','company','country'];
-  data!: employee[];
-  dataSource: MatTableDataSource<employee>;
+  data!: employeeI[];
+  dataSource: MatTableDataSource<employeeI>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @Input() filters!:filters;
+  @Input() filters!:filtersI;
   unsubscribe$: Subject<boolean> = new Subject();
 
   constructor(private _employeeServ:SharedDataService) {

@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, tap } from 'rxjs';
+import { configI } from 'src/app/interfaces';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 import { config } from './config';
 
@@ -12,7 +13,7 @@ import { config } from './config';
 })
 export class FilterComponent implements OnInit {
 
-  seedData = config;
+  seedData:configI[] = config;
   dynamicForm: FormGroup;
   unsubscribe$: Subject<boolean> = new Subject();
   @Output() filters = new EventEmitter<{}>();
@@ -70,7 +71,6 @@ export class FilterComponent implements OnInit {
     }
   }
 
-  
   seedFiltersFormArray() {
     this.seedData.forEach((seedDatum:any) => {
       const formGroup = this.addFormControls(seedDatum.title,seedDatum.type);
@@ -94,12 +94,17 @@ export class FilterComponent implements OnInit {
     // this._Service.getCountries(url).subscribe(res=>console.log)
     return [{name:'Egypt',Alpha3Code:'EGP'}]
   }
-
-
+  
   submit() {
     let params:any = {};
     this.dynamicForm.value.filters.forEach((filter:any) => params[filter.ControlName] = String(filter.Value).trim()); 
+    this.addQueryParams(params);
+    //example of using output decorator to share data between components..
+    this.filters.emit(params);
+   
+  }
 
+  addQueryParams(params:any){
     // changes the route without moving from the current view or
      // triggering a navigation event,
      this._router.navigate([''], {
@@ -109,9 +114,6 @@ export class FilterComponent implements OnInit {
       queryParamsHandling: 'merge',
       skipLocationChange: false
     });
-    // example of using output decorator to share data between components..
-    this.filters.emit(params);
-   
   }
 
   get filtersFormArray() {

@@ -1,4 +1,4 @@
-export interface filters{
+export interface filtersI{
     Email:string,
     Name:string,
     Phone:string,
@@ -7,7 +7,7 @@ export interface filters{
     Company:string,
 }
 
-export interface employee{
+export interface employeeI{
     id: number,
     name: string,
     email: string,
@@ -16,4 +16,10 @@ export interface employee{
     company: string,
     country: string,
     date: string,
+}
+export interface configI{
+    title: string;
+    type: string;
+    api?: string;
+    multiple?: boolean;
 }
