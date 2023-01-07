@@ -18,6 +18,22 @@ export class SharedDataService {
   }
 
   getCountries(url:string):Observable<any>{
-    return this.http.get<any>(url);
+    // return this.http.get<any>(url);
+   let obj = {
+      "af": {
+          "name": "Afghanistan",
+          "alpha2Code": "AF",
+          "alpha3Code": "AFG",
+          
+      },
+      "ss": {
+          "name": "sksks",
+          "alpha2Code": "wk",
+          "alpha3Code": "wu",
+          
+      }
+    }
+
+    return of(obj);
   }
 }

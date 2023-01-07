@@ -91,16 +91,8 @@ export class FilterComponent implements OnInit {
   }
 
   getOptions(url:string,formGroup:any){
-    this._Service.getCountries(url).pipe(takeUntil(this.unsubscribe$))
-    .subscribe((res:any)=>{
-      const countries = [];
-      for(let key in res){
-        let country = {name : res[key].name , code : res[key].alpha3Code};
-        countries.push(country);
-      }
-      const sortedCountries = this.sortCountries(countries);
-      formGroup.addControl('Options',this.fb.control(sortedCountries))
-    })
+    this._Service.getCountries(url).pipe(takeUntil(this.unsubscribe$),map(res=>Object.values(res)))
+    .subscribe((countries:any)=>formGroup.addControl('Options',this.fb.control(this.sortCountries(countries))))
   }
 
   sortCountries(countries:any){
